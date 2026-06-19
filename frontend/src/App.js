@@ -3,6 +3,7 @@ import Layout from './components/Layout';
 import EmployeeDashboard from './components/EmployeeDashboard';
 import './App.css';
 
+// Use environment variable or fallback to production URL
 const API_URL = process.env.REACT_APP_API_URL || 'https://hrms-backend-i5pv.onrender.com/api';
 
 function App() {
@@ -22,23 +23,29 @@ function App() {
     setMessage('');
 
     try {
+      console.log('🔐 Attempting login to:', `${API_URL}/auth/login`);
+      
       const response = await fetch(`${API_URL}/auth/login`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
         body: JSON.stringify({ email, password })
       });
 
       const data = await response.json();
 
-      if (data.token) {
+      if (response.ok && data.token) {
         setToken(data.token);
         setUser(data.user);
         setMessage(`✅ Welcome ${data.user.firstName} ${data.user.lastName}!`);
         await fetchEmployees(data.token);
       } else {
-        setMessage('❌ ' + (data.error || 'Login failed'));
+        setMessage('❌ ' + (data.error || 'Login failed. Please check your credentials.'));
       }
     } catch (error) {
+      console.error('Login error:', error);
       setMessage('❌ Connection error: ' + error.message);
     }
     setLoading(false);
@@ -48,7 +55,10 @@ function App() {
   const fetchEmployees = async (authToken) => {
     try {
       const response = await fetch(`${API_URL}/employees`, {
-        headers: { 'Authorization': `Bearer ${authToken}` }
+        headers: { 
+          'Authorization': `Bearer ${authToken}`,
+          'Content-Type': 'application/json'
+        }
       });
       const data = await response.json();
       setEmployees(Array.isArray(data) ? data : (data.data || data.employees || []));
@@ -91,8 +101,7 @@ function App() {
       case 'dashboard':
         return (
           <div className="content">
-            {/* Role-specific welcome banner */}
-            <div className={`welcome-banner ${role.toLowerCase()}`}>
+            <div className={`welcome-banner ${role?.toLowerCase() || ''}`}>
               <div className="welcome-content">
                 <div className="welcome-icon">
                   {isAdmin && '👑'}
@@ -111,7 +120,6 @@ function App() {
               <div className="role-badge-large">{role}</div>
             </div>
 
-            {/* Stats Cards - Role specific */}
             <div className="stats-grid">
               <div className="stat-card">
                 <div className="stat-icon">👥</div>
@@ -143,67 +151,28 @@ function App() {
                   </div>
                 </div>
               )}
-              {isManager && (
-                <div className="stat-card">
-                  <div className="stat-icon">⭐</div>
-                  <div className="stat-info">
-                    <span className="stat-value">4.5</span>
-                    <span className="stat-label">Team Performance</span>
-                  </div>
-                </div>
-              )}
-              {isEmployee && (
-                <div className="stat-card">
-                  <div className="stat-icon">📅</div>
-                  <div className="stat-info">
-                    <span className="stat-value">12</span>
-                    <span className="stat-label">Leave Balance</span>
-                  </div>
-                </div>
-              )}
             </div>
 
-            {/* Quick Actions - Role specific */}
             <div className="quick-actions">
               <h3>⚡ Quick Actions</h3>
               <div className="action-grid">
                 {(isAdmin || isManager) && (
-                  <>
-                    <button className="action-btn">
-                      <span>➕</span> Add Employee
-                    </button>
-                    <button className="action-btn">
-                      <span>📊</span> Generate Report
-                    </button>
-                  </>
-                )}
-                {isManager && (
-                  <button className="action-btn">
-                    <span>✅</span> Approve Leave
-                  </button>
+                  <button className="action-btn"><span>➕</span> Add Employee</button>
                 )}
                 {isEmployee && (
                   <>
-                    <button className="action-btn">
-                      <span>✈️</span> Request Leave
-                    </button>
-                    <button className="action-btn">
-                      <span>⏰</span> Clock In
-                    </button>
+                    <button className="action-btn"><span>✈️</span> Request Leave</button>
+                    <button className="action-btn"><span>⏰</span> Clock In</button>
                   </>
                 )}
-                <button className="action-btn">
-                  <span>👤</span> My Profile
-                </button>
+                <button className="action-btn"><span>👤</span> My Profile</button>
               </div>
             </div>
 
-            {/* Employee Dashboard - Full Employee View */}
             {isEmployee && (
               <EmployeeDashboard user={user} token={token} />
             )}
 
-            {/* Employee List - For Admin and Manager */}
             {(isAdmin || isManager) && (
               <div className="employee-section">
                 <h3>📋 Recent Employees</h3>
@@ -222,7 +191,6 @@ function App() {
                       <div className="employee-details">
                         <p>📧 {emp.User?.email}</p>
                         <p>🏢 {emp.Department?.name || 'N/A'}</p>
-                        {isAdmin && <p>💲 ${emp.salary?.toLocaleString()}</p>}
                       </div>
                     </div>
                   ))}
@@ -232,255 +200,8 @@ function App() {
           </div>
         );
 
-      case 'employees':
-        // Employee view - limited access
-        if (isEmployee) {
-          return (
-            <div className="content">
-              <div className="page-header">
-                <h2>👥 Employees</h2>
-                <p className="page-subtitle">View team members</p>
-              </div>
-              <div className="employee-grid">
-                {employees.map((emp) => (
-                  <div key={emp.id} className="employee-card">
-                    <div className="employee-header">
-                      <div className="employee-avatar">
-                        {emp.User?.first_name?.[0]}{emp.User?.last_name?.[0]}
-                      </div>
-                      <div className="employee-info">
-                        <h4>{emp.User?.first_name} {emp.User?.last_name}</h4>
-                        <span className="employee-role">{emp.JobTitle?.name || 'N/A'}</span>
-                      </div>
-                    </div>
-                    <div className="employee-details">
-                      <p>📧 {emp.User?.email}</p>
-                      <p>🏢 {emp.Department?.name || 'N/A'}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          );
-        }
-        // Admin/Manager view with management features
-        return (
-          <div className="content">
-            <div className="page-header">
-              <h2>👥 Employees</h2>
-              <p className="page-subtitle">Manage all employees in your organization</p>
-              <button className="add-btn">+ Add Employee</button>
-            </div>
-            <div className="employee-grid">
-              {employees.map((emp) => (
-                <div key={emp.id} className="employee-card admin-card">
-                  <div className="employee-header">
-                    <div className="employee-avatar">
-                      {emp.User?.first_name?.[0]}{emp.User?.last_name?.[0]}
-                    </div>
-                    <div className="employee-info">
-                      <h4>{emp.User?.first_name} {emp.User?.last_name}</h4>
-                      <span className="employee-role">{emp.JobTitle?.name || 'N/A'}</span>
-                    </div>
-                    {isAdmin && (
-                      <div className="card-actions">
-                        <button className="edit-btn">✏️</button>
-                        <button className="delete-btn">🗑️</button>
-                      </div>
-                    )}
-                  </div>
-                  <div className="employee-details">
-                    <p>📧 {emp.User?.email}</p>
-                    <p>🏢 {emp.Department?.name || 'N/A'}</p>
-                    <p>📅 Hired: {emp.hire_date}</p>
-                    {isAdmin && <p>💲 ${emp.salary?.toLocaleString()}</p>}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        );
-
-      case 'attendance':
-        return (
-          <div className="content">
-            <div className="page-header">
-              <h2>⏰ Attendance</h2>
-              <p className="page-subtitle">
-                {isAdmin && 'Monitor all employee attendance'}
-                {isManager && 'Monitor your team\'s attendance'}
-                {isEmployee && 'View your attendance history'}
-              </p>
-              {isEmployee && <button className="clock-in-btn">📍 Clock In</button>}
-            </div>
-            <div className="attendance-section">
-              <div className="attendance-summary">
-                <div className="summary-card">
-                  <span>✅ Present Today</span>
-                  <strong>{isAdmin ? '8' : isManager ? '3' : '1'}</strong>
-                </div>
-                <div className="summary-card">
-                  <span>❌ Absent Today</span>
-                  <strong>{isAdmin ? '2' : isManager ? '1' : '0'}</strong>
-                </div>
-                <div className="summary-card">
-                  <span>⏰ Late Today</span>
-                  <strong>{isAdmin ? '1' : isManager ? '0' : '0'}</strong>
-                </div>
-              </div>
-              <div className="attendance-table">
-                <p style={{ color: 'rgba(255,255,255,0.4)', textAlign: 'center', padding: '40px' }}>
-                  📋 Attendance records will appear here
-                </p>
-              </div>
-            </div>
-          </div>
-        );
-
-      case 'leave':
-        return (
-          <div className="content">
-            <div className="page-header">
-              <h2>✈️ Leave Management</h2>
-              <p className="page-subtitle">
-                {isAdmin && 'Manage all leave requests'}
-                {isManager && 'Approve or reject team leave requests'}
-                {isEmployee && 'Request leave and view balance'}
-              </p>
-              {isEmployee && <button className="add-btn">+ Request Leave</button>}
-            </div>
-            <div className="leave-section">
-              <div className="leave-balance-grid">
-                <div className="balance-card">
-                  <span>🏖️ Annual Leave</span>
-                  <strong>15 days</strong>
-                </div>
-                <div className="balance-card">
-                  <span>🤒 Sick Leave</span>
-                  <strong>8 days</strong>
-                </div>
-                <div className="balance-card">
-                  <span>📋 Casual Leave</span>
-                  <strong>5 days</strong>
-                </div>
-              </div>
-              <div className="leave-table">
-                {isManager && (
-                  <div className="pending-requests">
-                    <h4>⏳ Pending Approvals</h4>
-                    <div className="request-item">
-                      <span>David Kumar - Annual Leave</span>
-                      <div className="request-actions">
-                        <button className="approve-btn">✅ Approve</button>
-                        <button className="reject-btn">❌ Reject</button>
-                      </div>
-                    </div>
-                    <div className="request-item">
-                      <span>Maria Garcia - Sick Leave</span>
-                      <div className="request-actions">
-                        <button className="approve-btn">✅ Approve</button>
-                        <button className="reject-btn">❌ Reject</button>
-                      </div>
-                    </div>
-                  </div>
-                )}
-                {isEmployee && (
-                  <div className="my-leave-requests">
-                    <h4>📋 My Leave Requests</h4>
-                    <div className="leave-history-item">
-                      <span>Annual Leave - July 15-20</span>
-                      <span className="status-approved">✅ Approved</span>
-                    </div>
-                    <div className="leave-history-item">
-                      <span>Sick Leave - June 10-11</span>
-                      <span className="status-pending">⏳ Pending</span>
-                    </div>
-                  </div>
-                )}
-                {isAdmin && (
-                  <p style={{ color: 'rgba(255,255,255,0.4)', textAlign: 'center', padding: '40px' }}>
-                    📋 All leave requests will appear here
-                  </p>
-                )}
-              </div>
-            </div>
-          </div>
-        );
-
-      case 'payroll':
-        return (
-          <div className="content">
-            <div className="page-header">
-              <h2>💰 Payroll Management</h2>
-              <p className="page-subtitle">Manage salaries and payslips</p>
-            </div>
-            <div className="payroll-section">
-              <div className="payroll-summary">
-                <div className="summary-card">
-                  <span>💰 Total Payroll</span>
-                  <strong>$245,000</strong>
-                </div>
-                <div className="summary-card">
-                  <span>📄 Payslips Generated</span>
-                  <strong>3</strong>
-                </div>
-              </div>
-              <div className="payroll-table">
-                <p style={{ color: 'rgba(255,255,255,0.4)', textAlign: 'center', padding: '40px' }}>
-                  📋 Payroll records will appear here
-                </p>
-              </div>
-            </div>
-          </div>
-        );
-
-      case 'performance':
-        return (
-          <div className="content">
-            <div className="page-header">
-              <h2>⭐ Performance Management</h2>
-              <p className="page-subtitle">Track employee performance and reviews</p>
-            </div>
-            <div className="performance-section">
-              <p style={{ color: 'rgba(255,255,255,0.4)', textAlign: 'center', padding: '60px' }}>
-                📋 Performance reviews will appear here
-              </p>
-            </div>
-          </div>
-        );
-
-      case 'documents':
-        return (
-          <div className="content">
-            <div className="page-header">
-              <h2>📄 Documents</h2>
-              <p className="page-subtitle">Manage company documents and policies</p>
-            </div>
-            <div className="documents-section">
-              <p style={{ color: 'rgba(255,255,255,0.4)', textAlign: 'center', padding: '60px' }}>
-                📋 Documents will appear here
-              </p>
-            </div>
-          </div>
-        );
-
-      case 'reports':
-        return (
-          <div className="content">
-            <div className="page-header">
-              <h2>📊 Reports & Analytics</h2>
-              <p className="page-subtitle">View HR analytics and reports</p>
-            </div>
-            <div className="reports-section">
-              <p style={{ color: 'rgba(255,255,255,0.4)', textAlign: 'center', padding: '60px' }}>
-                📊 Reports will appear here
-              </p>
-            </div>
-          </div>
-        );
-
       default:
-        return <div>Page not found</div>;
+        return <div>Page coming soon</div>;
     }
   };
 
