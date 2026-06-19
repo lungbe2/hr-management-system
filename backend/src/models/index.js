@@ -1,16 +1,22 @@
 const { Sequelize, DataTypes } = require('sequelize');
 require('dotenv').config();
 
-// PostgreSQL connection
+// PostgreSQL connection with SSL for Render
 const sequelize = new Sequelize(
   process.env.DB_NAME || 'hrms_db',
-  process.env.DB_USER || 'postgres',
-  process.env.DB_PASSWORD || 'postgres123',
+  process.env.DB_USER || 'hr_admin',
+  process.env.DB_PASSWORD || '',
   {
     host: process.env.DB_HOST || 'localhost',
     port: process.env.DB_PORT || 5432,
     dialect: 'postgres',
     logging: false,
+    dialectOptions: {
+      ssl: {
+        require: true,
+        rejectUnauthorized: false
+      }
+    },
     define: {
       timestamps: true,
       underscored: true

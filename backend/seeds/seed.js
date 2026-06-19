@@ -3,13 +3,17 @@ const { Pool } = require('pg');
 const bcrypt = require('bcryptjs');
 const { v4: uuidv4 } = require('uuid');
 
-// Connection
+// Connection - Uses .env variables for Render database
 const pool = new Pool({
-  user: 'postgres',
-  host: 'localhost',
-  database: 'hrms_db',
-  password: 'postgres123',
-  port: 5432,
+  user: process.env.DB_USER || 'hr_admin',
+  host: process.env.DB_HOST || 'localhost',
+  database: process.env.DB_NAME || 'hrms_db',
+  password: process.env.DB_PASSWORD || '',
+  port: process.env.DB_PORT || 5432,
+  ssl: {
+    require: true,
+    rejectUnauthorized: false
+  }
 });
 
 async function seedDatabase() {
