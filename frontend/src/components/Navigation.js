@@ -2,7 +2,6 @@ import React from 'react';
 import './Navigation.css';
 
 const Navigation = ({ user, activeTab, setActiveTab }) => {
-  // Define all nav items with their tabs
   const navItems = [
     { id: 'dashboard', label: 'Dashboard', icon: '📊' },
     { id: 'employees', label: 'Employees', icon: '👥' },

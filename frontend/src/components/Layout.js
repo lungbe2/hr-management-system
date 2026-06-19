@@ -33,6 +33,7 @@ const Layout = ({ children, user, onLogout, activeTab, setActiveTab }) => {
         <h1>🏢 HRMS</h1>
         <div className="mobile-user-info">
           <span className="user-avatar">{user?.firstName?.[0]}{user?.lastName?.[0]}</span>
+          <button onClick={onLogout} className="mobile-logout-btn">🚪</button>
         </div>
       </header>
 

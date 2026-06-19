@@ -318,3 +318,60 @@
     max-width: 320px;
   }
 }
+/* Mobile Logout Button */
+.mobile-logout-btn {
+  background: none;
+  border: none;
+  color: #ff6b6b;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 4px 8px;
+  width: auto;
+}
+
+.mobile-logout-btn:hover {
+  background: rgba(255, 107, 107, 0.1);
+  border-radius: 8px;
+}
+
+/* Better Mobile Sidebar */
+@media (max-width: 768px) {
+  .sidebar {
+    width: 280px;
+    transform: translateX(-100%);
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  .mobile-header {
+    display: flex;
+    z-index: 100;
+  }
+
+  .main-content {
+    padding: 76px 12px 20px !important;
+    margin-left: 0 !important;
+  }
+
+  .close-sidebar {
+    display: block;
+  }
+
+  .sidebar-overlay {
+    display: block;
+  }
+}
+
+/* Fix for small screens */
+@media (max-width: 480px) {
+  .main-content {
+    padding: 70px 8px 16px !important;
+  }
+
+  .sidebar {
+    width: 100%;
+    max-width: 300px;
+  }
+}
