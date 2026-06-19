@@ -16,7 +16,7 @@ const Navigation = ({ user, activeTab, setActiveTab }) => {
   // Filter for Employee role
   const getVisibleItems = () => {
     if (user?.role === 'Employee') {
-      return navItems.filter(item => 
+      return navItems.filter(item =>
         ['dashboard', 'attendance', 'leave', 'documents'].includes(item.id)
       );
     }
@@ -30,7 +30,7 @@ const Navigation = ({ user, activeTab, setActiveTab }) => {
       <ul className="nav-list">
         {visibleItems.map(item => (
           <li key={item.id} className="nav-item">
-            <button 
+            <button
               className={`nav-link ${activeTab === item.id ? 'active' : ''}`}
               onClick={() => setActiveTab(item.id)}
             >

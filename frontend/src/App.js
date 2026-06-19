@@ -15,7 +15,7 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState('dashboard');
 
-  // ========== LOGIN ==========
+  // Login
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -44,7 +44,7 @@ function App() {
     setLoading(false);
   };
 
-  // ========== FETCH EMPLOYEES ==========
+  // Fetch employees
   const fetchEmployees = async (authToken) => {
     try {
       const response = await fetch(`${API_URL}/employees`, {
@@ -57,7 +57,7 @@ function App() {
     }
   };
 
-  // ========== LOGOUT ==========
+  // Logout
   const handleLogout = () => {
     setToken(null);
     setUser(null);
@@ -65,7 +65,7 @@ function App() {
     setMessage('Logged out');
   };
 
-  // ========== TEST ACCOUNTS ==========
+  // Test accounts
   const setTestAccount = (role) => {
     const accounts = {
       admin: { email: 'admin@company.com', password: 'Admin@123' },
@@ -87,11 +87,12 @@ function App() {
     const isManager = role === 'Manager';
     const isEmployee = role === 'Employee';
 
-    switch(activeTab) {
+    switch (activeTab) {
       case 'dashboard':
         return (
           <div className="content">
-            <div className={`welcome-banner ${role.toLowerCase()}`}>
+            {/* Welcome Banner */}
+            <div className={`welcome-banner ${role?.toLowerCase()}`}>
               <div className="welcome-content">
                 <div className="welcome-icon">
                   {isAdmin && '👑'}
@@ -110,6 +111,7 @@ function App() {
               <div className="role-badge-large">{role}</div>
             </div>
 
+            {/* Stats Cards */}
             <div className="stats-grid">
               <div className="stat-card">
                 <div className="stat-icon">👥</div>
@@ -141,62 +143,48 @@ function App() {
                   </div>
                 </div>
               )}
-              {isManager && (
-                <div className="stat-card">
-                  <div className="stat-icon">⭐</div>
-                  <div className="stat-info">
-                    <span className="stat-value">4.5</span>
-                    <span className="stat-label">Team Performance</span>
-                  </div>
-                </div>
-              )}
-              {isEmployee && (
-                <div className="stat-card">
-                  <div className="stat-icon">📅</div>
-                  <div className="stat-info">
-                    <span className="stat-value">12</span>
-                    <span className="stat-label">Leave Balance</span>
-                  </div>
-                </div>
-              )}
             </div>
 
+            {/* Quick Actions */}
             <div className="quick-actions">
               <h3>⚡ Quick Actions</h3>
               <div className="action-grid">
                 {(isAdmin || isManager) && (
-                  <button className="action-btn" onClick={() => setActiveTab('employees')}>
-                    <span>➕</span> Manage Employees
+                  <button className="action-btn primary" onClick={() => setActiveTab('employees')}>
+                    <span className="icon">➕</span> Manage Employees
                   </button>
                 )}
                 {isManager && (
                   <button className="action-btn" onClick={() => setActiveTab('leave')}>
-                    <span>✅</span> Approve Leave
+                    <span className="icon">✅</span> Approve Leave
                   </button>
                 )}
                 {isEmployee && (
                   <>
                     <button className="action-btn" onClick={() => setActiveTab('leave')}>
-                      <span>✈️</span> Request Leave
+                      <span className="icon">✈️</span> Request Leave
                     </button>
                     <button className="action-btn" onClick={() => setActiveTab('attendance')}>
-                      <span>⏰</span> Clock In
+                      <span className="icon">⏰</span> Clock In
                     </button>
                   </>
                 )}
                 <button className="action-btn">
-                  <span>👤</span> My Profile
+                  <span className="icon">👤</span> My Profile
                 </button>
               </div>
             </div>
 
-            {isEmployee && (
-              <EmployeeDashboard user={user} token={token} />
-            )}
+            {/* Employee Dashboard */}
+            {isEmployee && <EmployeeDashboard user={user} token={token} />}
 
+            {/* Employee List */}
             {(isAdmin || isManager) && (
               <div className="employee-section">
-                <h3>📋 Recent Employees</h3>
+                <div className="section-header">
+                  <h3>📋 Recent Employees</h3>
+                  <span className="view-all" onClick={() => setActiveTab('employees')}>View All →</span>
+                </div>
                 <div className="employee-grid">
                   {employees.slice(0, 4).map((emp) => (
                     <div key={emp.id} className="employee-card">
@@ -210,9 +198,9 @@ function App() {
                         </div>
                       </div>
                       <div className="employee-details">
-                        <p>📧 {emp.User?.email}</p>
-                        <p>🏢 {emp.Department?.name || 'N/A'}</p>
-                        {isAdmin && <p>💲 ${emp.salary?.toLocaleString()}</p>}
+                        <p><span className="label">📧</span> {emp.User?.email}</p>
+                        <p><span className="label">🏢</span> {emp.Department?.name || 'N/A'}</p>
+                        {isAdmin && <p><span className="label">💰</span> ${emp.salary?.toLocaleString()}</p>}
                       </div>
                     </div>
                   ))}
@@ -223,45 +211,20 @@ function App() {
         );
 
       case 'employees':
-        if (isEmployee) {
-          return (
-            <div className="content">
-              <div className="page-header">
-                <h2>👥 Employees</h2>
-                <p className="page-subtitle">View team members</p>
-              </div>
-              <div className="employee-grid">
-                {employees.map((emp) => (
-                  <div key={emp.id} className="employee-card">
-                    <div className="employee-header">
-                      <div className="employee-avatar">
-                        {emp.User?.first_name?.[0]}{emp.User?.last_name?.[0]}
-                      </div>
-                      <div className="employee-info">
-                        <h4>{emp.User?.first_name} {emp.User?.last_name}</h4>
-                        <span className="employee-role">{emp.JobTitle?.name || 'N/A'}</span>
-                      </div>
-                    </div>
-                    <div className="employee-details">
-                      <p>📧 {emp.User?.email}</p>
-                      <p>🏢 {emp.Department?.name || 'N/A'}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          );
-        }
         return (
           <div className="content">
             <div className="page-header">
-              <h2>👥 Employees</h2>
-              <p className="page-subtitle">Manage all employees in your organization</p>
-              <button className="add-btn">+ Add Employee</button>
+              <div className="page-header-left">
+                <h2>👥 <span>Employees</span></h2>
+                <p>Manage all employees in your organization</p>
+              </div>
+              <div className="page-header-right">
+                {isAdmin && <button className="add-btn">+ Add Employee</button>}
+              </div>
             </div>
             <div className="employee-grid">
               {employees.map((emp) => (
-                <div key={emp.id} className="employee-card admin-card">
+                <div key={emp.id} className="employee-card">
                   <div className="employee-header">
                     <div className="employee-avatar">
                       {emp.User?.first_name?.[0]}{emp.User?.last_name?.[0]}
@@ -270,18 +233,12 @@ function App() {
                       <h4>{emp.User?.first_name} {emp.User?.last_name}</h4>
                       <span className="employee-role">{emp.JobTitle?.name || 'N/A'}</span>
                     </div>
-                    {isAdmin && (
-                      <div className="card-actions">
-                        <button className="edit-btn">✏️</button>
-                        <button className="delete-btn">🗑️</button>
-                      </div>
-                    )}
                   </div>
                   <div className="employee-details">
-                    <p>📧 {emp.User?.email}</p>
-                    <p>🏢 {emp.Department?.name || 'N/A'}</p>
-                    <p>📅 Hired: {emp.hire_date}</p>
-                    {isAdmin && <p>💲 ${emp.salary?.toLocaleString()}</p>}
+                    <p><span className="label">📧</span> {emp.User?.email}</p>
+                    <p><span className="label">🏢</span> {emp.Department?.name || 'N/A'}</p>
+                    <p><span className="label">📅</span> Hired: {emp.hire_date}</p>
+                    {isAdmin && <p><span className="label">💰</span> ${emp.salary?.toLocaleString()}</p>}
                   </div>
                 </div>
               ))}
@@ -293,45 +250,56 @@ function App() {
         return (
           <div className="content">
             <div className="page-header">
-              <h2>⏰ Attendance</h2>
-              <p className="page-subtitle">
-                {isAdmin ? 'Monitor all employee attendance' :
-                 isManager ? 'Monitor your team\'s attendance' :
-                 'View your attendance history'}
-              </p>
+              <div className="page-header-left">
+                <h2>⏰ <span>Attendance</span></h2>
+                <p>Track employee attendance and clock-in/out</p>
+              </div>
             </div>
-            <div className="attendance-section">
-              <div className="attendance-summary">
-                <div className="summary-card">
-                  <span>✅ Present Today</span>
-                  <strong>{isAdmin ? '8' : isManager ? '3' : '1'}</strong>
-                </div>
-                <div className="summary-card">
-                  <span>❌ Absent Today</span>
-                  <strong>{isAdmin ? '2' : isManager ? '1' : '0'}</strong>
-                </div>
-                <div className="summary-card">
-                  <span>⏰ Late Today</span>
-                  <strong>{isAdmin ? '1' : isManager ? '0' : '0'}</strong>
+            <div className="stats-grid" style={{ marginBottom: '24px' }}>
+              <div className="stat-card">
+                <div className="stat-icon">✅</div>
+                <div className="stat-info">
+                  <span className="stat-value">{isAdmin ? '8' : '3'}</span>
+                  <span className="stat-label">Present Today</span>
                 </div>
               </div>
-              <div className="attendance-list">
-                <h4>📋 Today's Attendance</h4>
-                <div className="attendance-item">
-                  <span>David Kumar</span>
-                  <span className="clock-in-time">🟢 08:15 AM</span>
-                  <span className="attendance-status present">Present</span>
+              <div className="stat-card">
+                <div className="stat-icon">❌</div>
+                <div className="stat-info">
+                  <span className="stat-value">{isAdmin ? '2' : '1'}</span>
+                  <span className="stat-label">Absent Today</span>
                 </div>
-                <div className="attendance-item">
-                  <span>Sarah Johnson</span>
-                  <span className="clock-in-time">🟢 08:30 AM</span>
-                  <span className="attendance-status present">Present</span>
+              </div>
+              <div className="stat-card">
+                <div className="stat-icon">⏰</div>
+                <div className="stat-info">
+                  <span className="stat-value">{isAdmin ? '1' : '0'}</span>
+                  <span className="stat-label">Late Today</span>
                 </div>
-                <div className="attendance-item">
-                  <span>Maria Garcia</span>
-                  <span className="clock-out-time">❌ Not clocked in</span>
-                  <span className="attendance-status absent">Absent</span>
-                </div>
+              </div>
+            </div>
+            <div className="employee-section">
+              <div className="section-header">
+                <h3>📋 Today's Attendance</h3>
+              </div>
+              <div className="employee-grid">
+                {employees.slice(0, 5).map((emp) => (
+                  <div key={emp.id} className="employee-card">
+                    <div className="employee-header">
+                      <div className="employee-avatar">
+                        {emp.User?.first_name?.[0]}{emp.User?.last_name?.[0]}
+                      </div>
+                      <div className="employee-info">
+                        <h4>{emp.User?.first_name} {emp.User?.last_name}</h4>
+                        <span className="employee-role">{emp.JobTitle?.name || 'N/A'}</span>
+                      </div>
+                    </div>
+                    <div className="employee-details">
+                      <p><span className="label">🟢</span> 08:15 AM</p>
+                      <p><span className="label" style={{ color: '#4caf50' }}>✅</span> Present</p>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
@@ -341,64 +309,111 @@ function App() {
         return (
           <div className="content">
             <div className="page-header">
-              <h2>✈️ Leave Management</h2>
-              <p className="page-subtitle">
-                {isAdmin ? 'Manage all leave requests' :
-                 isManager ? 'Approve or reject team leave requests' :
-                 'Request leave and view balance'}
-              </p>
+              <div className="page-header-left">
+                <h2>✈️ <span>Leave Management</span></h2>
+                <p>{isAdmin ? 'Manage all leave requests' : isManager ? 'Approve or reject team leave requests' : 'Request leave and view balance'}</p>
+              </div>
               {isEmployee && <button className="add-btn">+ Request Leave</button>}
             </div>
-            <div className="leave-section">
-              <div className="leave-balance-grid">
-                <div className="balance-card">
-                  <span>🏖️ Annual Leave</span>
-                  <strong>15 days</strong>
-                </div>
-                <div className="balance-card">
-                  <span>🤒 Sick Leave</span>
-                  <strong>8 days</strong>
-                </div>
-                <div className="balance-card">
-                  <span>📋 Casual Leave</span>
-                  <strong>5 days</strong>
+            <div className="stats-grid" style={{ marginBottom: '24px' }}>
+              <div className="stat-card">
+                <div className="stat-icon">🏖️</div>
+                <div className="stat-info">
+                  <span className="stat-value">15</span>
+                  <span className="stat-label">Annual Leave</span>
                 </div>
               </div>
-              <div className="leave-list">
-                <h4>📋 Leave Requests</h4>
+              <div className="stat-card">
+                <div className="stat-icon">🤒</div>
+                <div className="stat-info">
+                  <span className="stat-value">8</span>
+                  <span className="stat-label">Sick Leave</span>
+                </div>
+              </div>
+              <div className="stat-card">
+                <div className="stat-icon">📋</div>
+                <div className="stat-info">
+                  <span className="stat-value">5</span>
+                  <span className="stat-label">Casual Leave</span>
+                </div>
+              </div>
+            </div>
+            <div className="employee-section">
+              <div className="section-header">
+                <h3>📋 Leave Requests</h3>
+              </div>
+              <div className="employee-grid">
                 {isManager && (
                   <>
-                    <div className="leave-item">
-                      <span>David Kumar - Annual Leave (Jul 15-20)</span>
-                      <div className="request-actions">
-                        <button className="approve-btn">✅ Approve</button>
-                        <button className="reject-btn">❌ Reject</button>
+                    <div className="employee-card" style={{ borderColor: 'rgba(255, 217, 61, 0.2)' }}>
+                      <div className="employee-header">
+                        <div className="employee-avatar">DK</div>
+                        <div className="employee-info">
+                          <h4>David Kumar</h4>
+                          <span className="employee-role">Annual Leave</span>
+                        </div>
+                      </div>
+                      <div className="employee-details">
+                        <p>📅 Jul 15-20, 2026</p>
+                        <p>💬 Family vacation</p>
+                        <div style={{ display: 'flex', gap: '8px', marginTop: '8px' }}>
+                          <button className="add-btn" style={{ padding: '6px 16px', fontSize: '12px' }}>✅ Approve</button>
+                          <button className="logout-btn" style={{ padding: '6px 16px', fontSize: '12px' }}>❌ Reject</button>
+                        </div>
                       </div>
                     </div>
-                    <div className="leave-item">
-                      <span>Maria Garcia - Sick Leave (Jun 10-11)</span>
-                      <div className="request-actions">
-                        <button className="approve-btn">✅ Approve</button>
-                        <button className="reject-btn">❌ Reject</button>
+                    <div className="employee-card" style={{ borderColor: 'rgba(255, 217, 61, 0.2)' }}>
+                      <div className="employee-header">
+                        <div className="employee-avatar">MG</div>
+                        <div className="employee-info">
+                          <h4>Maria Garcia</h4>
+                          <span className="employee-role">Sick Leave</span>
+                        </div>
+                      </div>
+                      <div className="employee-details">
+                        <p>📅 Jun 10-11, 2026</p>
+                        <p>💬 Doctor's appointment</p>
+                        <div style={{ display: 'flex', gap: '8px', marginTop: '8px' }}>
+                          <button className="add-btn" style={{ padding: '6px 16px', fontSize: '12px' }}>✅ Approve</button>
+                          <button className="logout-btn" style={{ padding: '6px 16px', fontSize: '12px' }}>❌ Reject</button>
+                        </div>
                       </div>
                     </div>
                   </>
                 )}
                 {isEmployee && (
                   <>
-                    <div className="leave-item">
-                      <span>Annual Leave - July 15-20</span>
-                      <span className="status-approved">✅ Approved</span>
+                    <div className="employee-card">
+                      <div className="employee-header">
+                        <div className="employee-avatar">DK</div>
+                        <div className="employee-info">
+                          <h4>David Kumar</h4>
+                          <span className="employee-role">Annual Leave</span>
+                        </div>
+                      </div>
+                      <div className="employee-details">
+                        <p>📅 Jul 15-20, 2026</p>
+                        <p><span style={{ color: '#4caf50' }}>✅ Approved</span></p>
+                      </div>
                     </div>
-                    <div className="leave-item">
-                      <span>Sick Leave - June 10-11</span>
-                      <span className="status-pending">⏳ Pending</span>
+                    <div className="employee-card">
+                      <div className="employee-header">
+                        <div className="employee-avatar">DK</div>
+                        <div className="employee-info">
+                          <h4>David Kumar</h4>
+                          <span className="employee-role">Sick Leave</span>
+                        </div>
+                      </div>
+                      <div className="employee-details">
+                        <p>📅 Jun 10-11, 2026</p>
+                        <p><span style={{ color: '#ffd93d' }}>⏳ Pending</span></p>
+                      </div>
                     </div>
                   </>
                 )}
                 {isAdmin && (
-                  <div className="leave-item">
-                    <span>All leave requests will appear here</span>
+                  <div style={{ textAlign: 'center', padding: '40px', color: 'rgba(255,255,255,0.3)' }}>
+                    📋 All leave requests will appear here
                   </div>
                 )}
               </div>
@@ -410,32 +425,50 @@ function App() {
         return (
           <div className="content">
             <div className="page-header">
-              <h2>💰 Payroll Management</h2>
-              <p className="page-subtitle">Manage salaries and payslips</p>
+              <div className="page-header-left">
+                <h2>💰 <span>Payroll Management</span></h2>
+                <p>Manage salaries and payslips</p>
+              </div>
             </div>
-            <div className="payroll-section">
-              <div className="payroll-summary">
-                <div className="summary-card">
-                  <span>💰 Total Payroll</span>
-                  <strong>$245,000</strong>
-                </div>
-                <div className="summary-card">
-                  <span>📄 Payslips Generated</span>
-                  <strong>3</strong>
+            <div className="stats-grid" style={{ marginBottom: '24px' }}>
+              <div className="stat-card">
+                <div className="stat-icon">💰</div>
+                <div className="stat-info">
+                  <span className="stat-value">$245K</span>
+                  <span className="stat-label">Total Payroll</span>
                 </div>
               </div>
-              <div className="payroll-list">
-                <h4>📋 Payroll Records</h4>
-                <div className="payroll-item">
-                  <span>David Kumar</span>
-                  <span>$7,200</span>
-                  <button className="view-btn">View</button>
+              <div className="stat-card">
+                <div className="stat-icon">📄</div>
+                <div className="stat-info">
+                  <span className="stat-value">3</span>
+                  <span className="stat-label">Payslips Generated</span>
                 </div>
-                <div className="payroll-item">
-                  <span>Sarah Johnson</span>
-                  <span>$8,500</span>
-                  <button className="view-btn">View</button>
-                </div>
+              </div>
+            </div>
+            <div className="employee-section">
+              <div className="section-header">
+                <h3>📋 Payroll Records</h3>
+              </div>
+              <div className="employee-grid">
+                {employees.slice(0, 3).map((emp) => (
+                  <div key={emp.id} className="employee-card">
+                    <div className="employee-header">
+                      <div className="employee-avatar">
+                        {emp.User?.first_name?.[0]}{emp.User?.last_name?.[0]}
+                      </div>
+                      <div className="employee-info">
+                        <h4>{emp.User?.first_name} {emp.User?.last_name}</h4>
+                        <span className="employee-role">{emp.JobTitle?.name || 'N/A'}</span>
+                      </div>
+                    </div>
+                    <div className="employee-details">
+                      <p><span className="label">💰</span> ${emp.salary?.toLocaleString()}</p>
+                      <p><span className="label">📅</span> {new Date().toLocaleString('default', { month: 'long' })} 2026</p>
+                      <button className="add-btn" style={{ padding: '6px 16px', fontSize: '12px', marginTop: '8px' }}>📄 View Payslip</button>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
@@ -445,22 +478,38 @@ function App() {
         return (
           <div className="content">
             <div className="page-header">
-              <h2>⭐ Performance Management</h2>
-              <p className="page-subtitle">Track employee performance and reviews</p>
+              <div className="page-header-left">
+                <h2>⭐ <span>Performance Management</span></h2>
+                <p>Track employee performance and reviews</p>
+              </div>
             </div>
-            <div className="performance-section">
-              <div className="performance-grid">
-                <div className="performance-card">
-                  <h4>David Kumar</h4>
-                  <p>⭐ Rating: 4.5/5</p>
-                  <p>"Excellent performance this quarter"</p>
-                  <span className="status-approved">✅ Completed</span>
+            <div className="employee-grid">
+              <div className="employee-card" style={{ borderColor: 'rgba(76, 175, 80, 0.2)' }}>
+                <div className="employee-header">
+                  <div className="employee-avatar">DK</div>
+                  <div className="employee-info">
+                    <h4>David Kumar</h4>
+                    <span className="employee-role">Software Engineer</span>
+                  </div>
                 </div>
-                <div className="performance-card">
-                  <h4>Maria Garcia</h4>
-                  <p>⭐ Rating: 4.0/5</p>
-                  <p>"Great teamwork and dedication"</p>
-                  <span className="status-approved">✅ Completed</span>
+                <div className="employee-details">
+                  <p><span className="label">⭐</span> Rating: 4.5/5</p>
+                  <p>💬 "Excellent performance this quarter"</p>
+                  <p style={{ color: '#4caf50' }}>✅ Completed</p>
+                </div>
+              </div>
+              <div className="employee-card" style={{ borderColor: 'rgba(76, 175, 80, 0.2)' }}>
+                <div className="employee-header">
+                  <div className="employee-avatar">MG</div>
+                  <div className="employee-info">
+                    <h4>Maria Garcia</h4>
+                    <span className="employee-role">HR Specialist</span>
+                  </div>
+                </div>
+                <div className="employee-details">
+                  <p><span className="label">⭐</span> Rating: 4.0/5</p>
+                  <p>💬 "Great teamwork and dedication"</p>
+                  <p style={{ color: '#4caf50' }}>✅ Completed</p>
                 </div>
               </div>
             </div>
@@ -471,22 +520,36 @@ function App() {
         return (
           <div className="content">
             <div className="page-header">
-              <h2>📄 Documents</h2>
-              <p className="page-subtitle">Manage company documents and policies</p>
+              <div className="page-header-left">
+                <h2>📄 <span>Documents</span></h2>
+                <p>Manage company documents and policies</p>
+              </div>
             </div>
-            <div className="documents-section">
-              <div className="document-grid">
-                <div className="document-card">
-                  <span>📄</span>
-                  <h4>Employee Handbook</h4>
-                  <p>Version 2.0</p>
-                  <button className="view-btn">Download</button>
+            <div className="employee-grid">
+              <div className="employee-card">
+                <div className="employee-header">
+                  <div style={{ fontSize: '32px' }}>📄</div>
+                  <div className="employee-info">
+                    <h4>Employee Handbook</h4>
+                    <span className="employee-role">Version 2.0</span>
+                  </div>
                 </div>
-                <div className="document-card">
-                  <span>📄</span>
-                  <h4>Code of Conduct</h4>
-                  <p>Version 1.5</p>
-                  <button className="view-btn">Download</button>
+                <div className="employee-details">
+                  <p>📅 Updated: June 2026</p>
+                  <button className="add-btn" style={{ padding: '6px 16px', fontSize: '12px', marginTop: '8px' }}>📥 Download</button>
+                </div>
+              </div>
+              <div className="employee-card">
+                <div className="employee-header">
+                  <div style={{ fontSize: '32px' }}>📄</div>
+                  <div className="employee-info">
+                    <h4>Code of Conduct</h4>
+                    <span className="employee-role">Version 1.5</span>
+                  </div>
+                </div>
+                <div className="employee-details">
+                  <p>📅 Updated: March 2026</p>
+                  <button className="add-btn" style={{ padding: '6px 16px', fontSize: '12px', marginTop: '8px' }}>📥 Download</button>
                 </div>
               </div>
             </div>
@@ -497,22 +560,34 @@ function App() {
         return (
           <div className="content">
             <div className="page-header">
-              <h2>📊 Reports & Analytics</h2>
-              <p className="page-subtitle">View HR analytics and reports</p>
+              <div className="page-header-left">
+                <h2>📊 <span>Reports & Analytics</span></h2>
+                <p>View HR analytics and reports</p>
+              </div>
             </div>
-            <div className="reports-section">
-              <div className="report-grid">
-                <div className="report-card">
-                  <span>📊</span>
-                  <h4>Attendance Report</h4>
-                  <p>Last 30 days</p>
-                  <button className="view-btn">Generate</button>
+            <div className="employee-grid">
+              <div className="employee-card">
+                <div className="employee-header">
+                  <div style={{ fontSize: '32px' }}>📊</div>
+                  <div className="employee-info">
+                    <h4>Attendance Report</h4>
+                    <span className="employee-role">Last 30 days</span>
+                  </div>
                 </div>
-                <div className="report-card">
-                  <span>📊</span>
-                  <h4>Leave Report</h4>
-                  <p>This month</p>
-                  <button className="view-btn">Generate</button>
+                <div className="employee-details">
+                  <button className="add-btn" style={{ padding: '6px 16px', fontSize: '12px', marginTop: '8px' }}>📥 Generate</button>
+                </div>
+              </div>
+              <div className="employee-card">
+                <div className="employee-header">
+                  <div style={{ fontSize: '32px' }}>📊</div>
+                  <div className="employee-info">
+                    <h4>Leave Report</h4>
+                    <span className="employee-role">This month</span>
+                  </div>
+                </div>
+                <div className="employee-details">
+                  <button className="add-btn" style={{ padding: '6px 16px', fontSize: '12px', marginTop: '8px' }}>📥 Generate</button>
                 </div>
               </div>
             </div>
@@ -520,7 +595,7 @@ function App() {
         );
 
       default:
-        return <div>Page not found</div>;
+        return <div className="content"><p style={{ color: 'rgba(255,255,255,0.3)', textAlign: 'center', padding: '60px' }}>Page not found</p></div>;
     }
   };
 
@@ -528,52 +603,30 @@ function App() {
   if (!token) {
     return (
       <div className="login-page">
-        {/* Floating Particles */}
-        <div className="particles">
-          <div className="particle"></div>
-          <div className="particle"></div>
-          <div className="particle"></div>
-          <div className="particle"></div>
-          <div className="particle"></div>
-          <div className="particle"></div>
-          <div className="particle"></div>
-          <div className="particle"></div>
-          <div className="particle"></div>
-          <div className="particle"></div>
-        </div>
-
         <div className="login-container">
-          {/* Left Side - Branding */}
+          {/* Left Panel - Branding */}
           <div className="login-brand">
-            <div className="brand-badge">✦ HR MANAGEMENT</div>
+            <span className="brand-badge">✨ HR MANAGEMENT</span>
             <div className="logo-wrapper">
               <div className="logo-icon">🏢</div>
               <h1>HR <span>Management</span></h1>
             </div>
             <p className="tagline">Complete HR solution for modern teams. Manage employees, attendance, leave, and payroll in one place.</p>
             <div className="features-grid">
-              <div className="feature-item">
-                <span className="icon">👥</span> Employee Management
-              </div>
-              <div className="feature-item">
-                <span className="icon">⏰</span> Time & Attendance
-              </div>
-              <div className="feature-item">
-                <span className="icon">✈️</span> Leave Management
-              </div>
-              <div className="feature-item">
-                <span className="icon">💰</span> Payroll Processing
-              </div>
+              <div className="feature-item"><span className="icon">👥</span> Employee Management</div>
+              <div className="feature-item"><span className="icon">⏰</span> Time & Attendance</div>
+              <div className="feature-item"><span className="icon">✈️</span> Leave Management</div>
+              <div className="feature-item"><span className="icon">💰</span> Payroll Processing</div>
             </div>
           </div>
 
-          {/* Right Side - Login Form */}
+          {/* Right Panel - Login Form */}
           <div className="login-form-container">
             <div className="form-header">
               <h2>Welcome Back</h2>
               <p className="subtitle">Sign in to your account to continue</p>
             </div>
-            
+
             <form className="login-form" onSubmit={handleLogin}>
               <div className="form-group">
                 <label>Email Address</label>
@@ -605,22 +658,16 @@ function App() {
                 {loading ? 'Signing in...' : 'Sign In →'}
               </button>
             </form>
-            
+
             <div className="test-accounts">
               <span className="test-label">Quick Test Accounts</span>
               <div className="test-buttons">
-                <button onClick={() => setTestAccount('admin')} className="test-btn admin">
-                  👑 Admin
-                </button>
-                <button onClick={() => setTestAccount('hr')} className="test-btn manager">
-                  👔 Manager
-                </button>
-                <button onClick={() => setTestAccount('employee')} className="test-btn employee">
-                  👤 Employee
-                </button>
+                <button onClick={() => setTestAccount('admin')} className="test-btn admin">👑 Admin</button>
+                <button onClick={() => setTestAccount('hr')} className="test-btn manager">👔 Manager</button>
+                <button onClick={() => setTestAccount('employee')} className="test-btn employee">👤 Employee</button>
               </div>
             </div>
-            
+
             {message && (
               <div className={`message ${message.includes('✅') ? 'success' : 'error'} visible`}>
                 {message}
@@ -634,8 +681,8 @@ function App() {
 
   // ========== DASHBOARD ==========
   return (
-    <Layout 
-      user={user} 
+    <Layout
+      user={user}
       onLogout={handleLogout}
       activeTab={activeTab}
       setActiveTab={setActiveTab}

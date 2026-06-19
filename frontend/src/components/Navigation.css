@@ -1,4 +1,6 @@
-/* ========== NAVIGATION ========== */
+/* ============================================================
+   NAVIGATION
+   ============================================================ */
 .navigation {
   padding: 8px 12px;
   flex: 1;
@@ -28,9 +30,9 @@
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.2s ease;
   text-align: left;
-  text-decoration: none;
+  font-family: 'Inter', sans-serif;
 }
 
 .nav-link:hover {
@@ -61,7 +63,7 @@
   white-space: nowrap;
 }
 
-/* ========== RESPONSIVE ========== */
+/* Responsive */
 @media (max-width: 768px) {
   .nav-link {
     padding: 14px 16px;
@@ -78,7 +80,7 @@
   .navigation {
     padding: 4px 8px;
   }
-  
+
   .nav-link {
     padding: 12px 14px;
     font-size: 14px;

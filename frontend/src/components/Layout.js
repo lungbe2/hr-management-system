@@ -31,9 +31,11 @@ const Layout = ({ children, user, onLogout, activeTab, setActiveTab }) => {
           ☰
         </button>
         <h1>🏢 HRMS</h1>
-        <div className="mobile-user-info">
-          <span className="user-avatar">{user?.firstName?.[0]}{user?.lastName?.[0]}</span>
-          <button onClick={onLogout} className="mobile-logout-btn">🚪</button>
+        <div className="mobile-user-actions">
+          <span className="mobile-avatar">{user?.firstName?.[0]}{user?.lastName?.[0]}</span>
+          <button onClick={onLogout} className="mobile-logout-btn" title="Logout">
+            🚪
+          </button>
         </div>
       </header>
 
@@ -46,16 +48,16 @@ const Layout = ({ children, user, onLogout, activeTab, setActiveTab }) => {
           </div>
           <button className="close-sidebar" onClick={toggleSidebar}>✕</button>
         </div>
-        
-        <Navigation 
-          user={user} 
-          activeTab={activeTab} 
-          setActiveTab={setActiveTab} 
+
+        <Navigation
+          user={user}
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
         />
-        
+
         <div className="sidebar-footer">
           <div className="user-profile">
-            <div className="user-avatar large">
+            <div className="user-avatar">
               {user?.firstName?.[0]}{user?.lastName?.[0]}
             </div>
             <div className="user-details">

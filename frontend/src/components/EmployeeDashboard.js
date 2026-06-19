@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 
-// Use environment variable or fallback to production URL
 const API_URL = process.env.REACT_APP_API_URL || 'https://hrms-backend-i5pv.onrender.com/api';
 
 const EmployeeDashboard = ({ user, token }) => {
@@ -20,11 +19,11 @@ const EmployeeDashboard = ({ user, token }) => {
   const [loading, setLoading] = useState(false);
   const [clockInLocation, setClockInLocation] = useState(null);
 
-  // Get current location for clock in
+  // Get location for clock in
   const getLocation = () => {
     return new Promise((resolve, reject) => {
       if (!navigator.geolocation) {
-        reject('Geolocation is not supported by your browser');
+        reject('Geolocation is not supported');
         return;
       }
       navigator.geolocation.getCurrentPosition(
@@ -44,13 +43,11 @@ const EmployeeDashboard = ({ user, token }) => {
   const handleClockIn = async () => {
     setLoading(true);
     setMessage('');
-    
+
     try {
-      // Get location
       const location = await getLocation();
       setClockInLocation(location);
-      
-      // Send clock in request
+
       const response = await fetch(`${API_URL}/attendance/clock-in`, {
         method: 'POST',
         headers: {
@@ -64,9 +61,9 @@ const EmployeeDashboard = ({ user, token }) => {
           location: 'Main Office'
         })
       });
-      
+
       const data = await response.json();
-      
+
       if (response.ok) {
         const now = new Date();
         setIsClockedIn(true);
@@ -78,7 +75,7 @@ const EmployeeDashboard = ({ user, token }) => {
       }
     } catch (error) {
       if (error.code === 1) {
-        setMessage('❌ Location access denied. Please allow location access to clock in.');
+        setMessage('❌ Location access denied. Please allow location access.');
       } else {
         setMessage('❌ Error: ' + error.message);
       }
@@ -90,12 +87,10 @@ const EmployeeDashboard = ({ user, token }) => {
   const handleClockOut = async () => {
     setLoading(true);
     setMessage('');
-    
+
     try {
-      // Get location
       const location = await getLocation();
-      
-      // Send clock out request
+
       const response = await fetch(`${API_URL}/attendance/clock-out`, {
         method: 'POST',
         headers: {
@@ -109,9 +104,9 @@ const EmployeeDashboard = ({ user, token }) => {
           location: 'Main Office'
         })
       });
-      
+
       const data = await response.json();
-      
+
       if (response.ok) {
         const now = new Date();
         setIsClockedIn(false);
@@ -122,7 +117,7 @@ const EmployeeDashboard = ({ user, token }) => {
       }
     } catch (error) {
       if (error.code === 1) {
-        setMessage('❌ Location access denied. Please allow location access to clock out.');
+        setMessage('❌ Location access denied. Please allow location access.');
       } else {
         setMessage('❌ Error: ' + error.message);
       }
@@ -161,7 +156,7 @@ const EmployeeDashboard = ({ user, token }) => {
     e.preventDefault();
     setLoading(true);
     setMessage('');
-    
+
     try {
       const response = await fetch(`${API_URL}/leave/requests`, {
         method: 'POST',
@@ -171,11 +166,11 @@ const EmployeeDashboard = ({ user, token }) => {
         },
         body: JSON.stringify(leaveFormData)
       });
-      
+
       const data = await response.json();
-      
+
       if (response.ok) {
-        setMessage('✅ Leave request submitted successfully!');
+        setMessage('✅ Leave request submitted!');
         setShowLeaveForm(false);
         setLeaveFormData({
           leave_type: 'Annual',
@@ -185,7 +180,7 @@ const EmployeeDashboard = ({ user, token }) => {
         });
         await fetchLeaveRequests();
       } else {
-        setMessage('❌ Failed to submit leave: ' + (data.error || 'Unknown error'));
+        setMessage('❌ Failed: ' + (data.error || 'Unknown error'));
       }
     } catch (error) {
       setMessage('❌ Error: ' + error.message);
@@ -193,11 +188,9 @@ const EmployeeDashboard = ({ user, token }) => {
     setLoading(false);
   };
 
-  // Fetch data on mount
   useEffect(() => {
     fetchAttendanceHistory();
     fetchLeaveRequests();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -207,7 +200,7 @@ const EmployeeDashboard = ({ user, token }) => {
         <p>Here's your dashboard for today</p>
       </div>
 
-      {/* ========== CLOCK IN/OUT SECTION ========== */}
+      {/* Clock Section */}
       <div className="clock-section">
         <div className="clock-card">
           <div className="clock-icon">
@@ -217,7 +210,7 @@ const EmployeeDashboard = ({ user, token }) => {
             <h3>{isClockedIn ? 'Clocked In' : 'Ready to Clock In'}</h3>
             <p>{isClockedIn ? `Since ${clockInTime?.toLocaleTimeString()}` : 'Start your work day'}</p>
           </div>
-          <button 
+          <button
             onClick={isClockedIn ? handleClockOut : handleClockIn}
             disabled={loading}
             className={isClockedIn ? 'clock-out-btn' : 'clock-in-btn'}
@@ -225,13 +218,13 @@ const EmployeeDashboard = ({ user, token }) => {
             {loading ? 'Processing...' : (isClockedIn ? '🔴 Clock Out' : '🟢 Clock In')}
           </button>
         </div>
-        
+
         {message && (
           <div className={`clock-message ${message.includes('✅') ? 'success' : 'error'}`}>
             {message}
           </div>
         )}
-        
+
         {clockInLocation && (
           <div className="location-indicator">
             📍 Location verified: {clockInLocation.lat.toFixed(6)}, {clockInLocation.lng.toFixed(6)}
@@ -239,7 +232,7 @@ const EmployeeDashboard = ({ user, token }) => {
         )}
       </div>
 
-      {/* ========== QUICK STATS ========== */}
+      {/* Quick Stats */}
       <div className="employee-stats-grid">
         <div className="emp-stat-card">
           <span className="emp-stat-icon">📅</span>
@@ -264,8 +257,9 @@ const EmployeeDashboard = ({ user, token }) => {
         </div>
       </div>
 
+      {/* Dashboard Grid */}
       <div className="dashboard-grid">
-        {/* ========== LEAVE MANAGEMENT ========== */}
+        {/* Leave Management */}
         <div className="dashboard-card leave-card">
           <div className="card-header">
             <h3>✈️ Leave Management</h3>
@@ -273,8 +267,7 @@ const EmployeeDashboard = ({ user, token }) => {
               {showLeaveForm ? '✕' : '+ Request'}
             </button>
           </div>
-          
-          {/* Leave Balance */}
+
           <div className="leave-balance-mini">
             <div className="balance-mini-item">
               <span>Annual</span>
@@ -290,14 +283,13 @@ const EmployeeDashboard = ({ user, token }) => {
             </div>
           </div>
 
-          {/* Leave Form */}
           {showLeaveForm && (
             <form className="leave-form-mini" onSubmit={handleLeaveSubmit}>
               <div className="form-group">
                 <label>Leave Type</label>
-                <select 
+                <select
                   value={leaveFormData.leave_type}
-                  onChange={(e) => setLeaveFormData({...leaveFormData, leave_type: e.target.value})}
+                  onChange={(e) => setLeaveFormData({ ...leaveFormData, leave_type: e.target.value })}
                   required
                 >
                   <option>Annual</option>
@@ -310,27 +302,27 @@ const EmployeeDashboard = ({ user, token }) => {
               </div>
               <div className="form-group">
                 <label>Start Date</label>
-                <input 
-                  type="date" 
+                <input
+                  type="date"
                   value={leaveFormData.start_date}
-                  onChange={(e) => setLeaveFormData({...leaveFormData, start_date: e.target.value})}
+                  onChange={(e) => setLeaveFormData({ ...leaveFormData, start_date: e.target.value })}
                   required
                 />
               </div>
               <div className="form-group">
                 <label>End Date</label>
-                <input 
-                  type="date" 
+                <input
+                  type="date"
                   value={leaveFormData.end_date}
-                  onChange={(e) => setLeaveFormData({...leaveFormData, end_date: e.target.value})}
+                  onChange={(e) => setLeaveFormData({ ...leaveFormData, end_date: e.target.value })}
                   required
                 />
               </div>
               <div className="form-group">
                 <label>Reason</label>
-                <textarea 
+                <textarea
                   value={leaveFormData.reason}
-                  onChange={(e) => setLeaveFormData({...leaveFormData, reason: e.target.value})}
+                  onChange={(e) => setLeaveFormData({ ...leaveFormData, reason: e.target.value })}
                   rows="2"
                   placeholder="Optional reason for leave"
                 />
@@ -341,7 +333,6 @@ const EmployeeDashboard = ({ user, token }) => {
             </form>
           )}
 
-          {/* Recent Leave Requests */}
           <div className="recent-leave">
             <h4>Recent Requests</h4>
             {leaveRequests.length > 0 ? (
@@ -364,7 +355,7 @@ const EmployeeDashboard = ({ user, token }) => {
           </div>
         </div>
 
-        {/* ========== ATTENDANCE HISTORY ========== */}
+        {/* Attendance History */}
         <div className="dashboard-card attendance-card">
           <div className="card-header">
             <h3>⏰ Recent Attendance</h3>
