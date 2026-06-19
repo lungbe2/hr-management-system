@@ -15,7 +15,7 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState('dashboard');
 
-  // Login
+  // ========== LOGIN ==========
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -44,7 +44,7 @@ function App() {
     setLoading(false);
   };
 
-  // Fetch employees
+  // ========== FETCH EMPLOYEES ==========
   const fetchEmployees = async (authToken) => {
     try {
       const response = await fetch(`${API_URL}/employees`, {
@@ -57,7 +57,7 @@ function App() {
     }
   };
 
-  // Logout
+  // ========== LOGOUT ==========
   const handleLogout = () => {
     setToken(null);
     setUser(null);
@@ -65,7 +65,7 @@ function App() {
     setMessage('Logged out');
   };
 
-  // Test accounts
+  // ========== TEST ACCOUNTS ==========
   const setTestAccount = (role) => {
     const accounts = {
       admin: { email: 'admin@company.com', password: 'Admin@123' },
@@ -80,7 +80,7 @@ function App() {
     }
   };
 
-  // ========== RENDER CONTENT BASED ON TAB & ROLE ==========
+  // ========== RENDER CONTENT ==========
   const renderContent = () => {
     const role = user?.role;
     const isAdmin = role === 'Admin';
@@ -91,8 +91,7 @@ function App() {
       case 'dashboard':
         return (
           <div className="content">
-            {/* Welcome Banner */}
-            <div className={`welcome-banner ${role?.toLowerCase()}`}>
+            <div className={`welcome-banner ${role.toLowerCase()}`}>
               <div className="welcome-content">
                 <div className="welcome-icon">
                   {isAdmin && '👑'}
@@ -111,7 +110,6 @@ function App() {
               <div className="role-badge-large">{role}</div>
             </div>
 
-            {/* Stats Cards */}
             <div className="stats-grid">
               <div className="stat-card">
                 <div className="stat-icon">👥</div>
@@ -163,7 +161,6 @@ function App() {
               )}
             </div>
 
-            {/* Quick Actions */}
             <div className="quick-actions">
               <h3>⚡ Quick Actions</h3>
               <div className="action-grid">
@@ -193,12 +190,10 @@ function App() {
               </div>
             </div>
 
-            {/* Employee Dashboard - Full Employee View */}
             {isEmployee && (
               <EmployeeDashboard user={user} token={token} />
             )}
 
-            {/* Employee List - For Admin and Manager */}
             {(isAdmin || isManager) && (
               <div className="employee-section">
                 <h3>📋 Recent Employees</h3>
@@ -228,7 +223,6 @@ function App() {
         );
 
       case 'employees':
-        // Employee view - limited access
         if (isEmployee) {
           return (
             <div className="content">
@@ -258,7 +252,6 @@ function App() {
             </div>
           );
         }
-        // Admin/Manager view with management features
         return (
           <div className="content">
             <div className="page-header">
@@ -535,57 +528,96 @@ function App() {
   if (!token) {
     return (
       <div className="login-page">
+        {/* Floating Particles */}
+        <div className="particles">
+          <div className="particle"></div>
+          <div className="particle"></div>
+          <div className="particle"></div>
+          <div className="particle"></div>
+          <div className="particle"></div>
+          <div className="particle"></div>
+          <div className="particle"></div>
+          <div className="particle"></div>
+          <div className="particle"></div>
+          <div className="particle"></div>
+        </div>
+
         <div className="login-container">
           {/* Left Side - Branding */}
           <div className="login-brand">
-            <div className="logo">🏢</div>
-            <h1>HR <span>Management</span></h1>
-            <p>Complete HR solution for modern teams.</p>
-            <div className="features">
-              <div className="feature-item"><span>👥</span> Employee Management</div>
-              <div className="feature-item"><span>⏰</span> Time & Attendance</div>
-              <div className="feature-item"><span>✈️</span> Leave Management</div>
-              <div className="feature-item"><span>💰</span> Payroll Processing</div>
+            <div className="brand-badge">✦ HR MANAGEMENT</div>
+            <div className="logo-wrapper">
+              <div className="logo-icon">🏢</div>
+              <h1>HR <span>Management</span></h1>
+            </div>
+            <p className="tagline">Complete HR solution for modern teams. Manage employees, attendance, leave, and payroll in one place.</p>
+            <div className="features-grid">
+              <div className="feature-item">
+                <span className="icon">👥</span> Employee Management
+              </div>
+              <div className="feature-item">
+                <span className="icon">⏰</span> Time & Attendance
+              </div>
+              <div className="feature-item">
+                <span className="icon">✈️</span> Leave Management
+              </div>
+              <div className="feature-item">
+                <span className="icon">💰</span> Payroll Processing
+              </div>
             </div>
           </div>
 
           {/* Right Side - Login Form */}
           <div className="login-form-container">
-            <h2>Welcome Back</h2>
-            <p className="subtitle">Sign in to your account</p>
+            <div className="form-header">
+              <h2>Welcome Back</h2>
+              <p className="subtitle">Sign in to your account to continue</p>
+            </div>
             
             <form className="login-form" onSubmit={handleLogin}>
               <div className="form-group">
                 <label>Email Address</label>
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Enter your email"
-                  required
-                />
+                <div className="input-wrapper">
+                  <span className="input-icon">📧</span>
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="Enter your email"
+                    required
+                  />
+                </div>
               </div>
               <div className="form-group">
                 <label>Password</label>
-                <input
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Enter your password"
-                  required
-                />
+                <div className="input-wrapper">
+                  <span className="input-icon">🔒</span>
+                  <input
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="Enter your password"
+                    required
+                  />
+                </div>
               </div>
               <button type="submit" className="login-btn" disabled={loading}>
-                {loading ? 'Signing in...' : 'Sign In'}
+                {loading ? 'Signing in...' : 'Sign In →'}
               </button>
             </form>
             
             <div className="test-accounts">
               <span className="test-label">Quick Test Accounts</span>
               <div className="test-buttons">
-                <button onClick={() => setTestAccount('admin')} className="test-btn admin">👑 Admin</button>
-                <button onClick={() => setTestAccount('hr')} className="test-btn manager">👔 Manager</button>
-                <button onClick={() => setTestAccount('employee')} className="test-btn employee">👤 Employee</button>
+                <button onClick={() => setTestAccount('admin')} className="test-btn admin">
+                  👑 Admin
+                </button>
+                <button onClick={() => setTestAccount('hr')} className="test-btn manager">
+                  👔 Manager
+                </button>
+                <button onClick={() => setTestAccount('employee')} className="test-btn employee">
+                  👤 Employee
+                </button>
               </div>
             </div>
             
