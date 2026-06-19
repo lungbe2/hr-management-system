@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 
+// Use environment variable or fallback to production URL
+const API_URL = process.env.REACT_APP_API_URL || 'https://hrms-backend-i5pv.onrender.com/api';
+
 const EmployeeDashboard = ({ user, token }) => {
   const [isClockedIn, setIsClockedIn] = useState(false);
   const [clockInTime, setClockInTime] = useState(null);
-  const [clockOutTime, setClockOutTime] = useState(null);
   const [attendanceHistory, setAttendanceHistory] = useState([]);
   const [leaveRequests, setLeaveRequests] = useState([]);
   const [leaveBalance, setLeaveBalance] = useState({ annual: 15, sick: 8, casual: 5 });
@@ -17,8 +19,6 @@ const EmployeeDashboard = ({ user, token }) => {
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
   const [clockInLocation, setClockInLocation] = useState(null);
-
-  const API_URL = 'http://localhost:5000/api';
 
   // Get current location for clock in
   const getLocation = () => {
@@ -115,7 +115,6 @@ const EmployeeDashboard = ({ user, token }) => {
       if (response.ok) {
         const now = new Date();
         setIsClockedIn(false);
-        setClockOutTime(now);
         setMessage(`✅ Clocked out at ${now.toLocaleTimeString()}`);
         await fetchAttendanceHistory();
       } else {
@@ -194,9 +193,11 @@ const EmployeeDashboard = ({ user, token }) => {
     setLoading(false);
   };
 
+  // Fetch data on mount
   useEffect(() => {
     fetchAttendanceHistory();
     fetchLeaveRequests();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -331,6 +332,7 @@ const EmployeeDashboard = ({ user, token }) => {
                   value={leaveFormData.reason}
                   onChange={(e) => setLeaveFormData({...leaveFormData, reason: e.target.value})}
                   rows="2"
+                  placeholder="Optional reason for leave"
                 />
               </div>
               <button type="submit" disabled={loading} className="submit-leave-btn">
@@ -341,6 +343,7 @@ const EmployeeDashboard = ({ user, token }) => {
 
           {/* Recent Leave Requests */}
           <div className="recent-leave">
+            <h4>Recent Requests</h4>
             {leaveRequests.length > 0 ? (
               leaveRequests.map((req, index) => (
                 <div key={index} className="leave-item">

@@ -3,7 +3,7 @@ import Layout from './components/Layout';
 import EmployeeDashboard from './components/EmployeeDashboard';
 import './App.css';
 
-const API_URL = 'http://localhost:5000/api';
+const API_URL = process.env.REACT_APP_API_URL || 'https://hrms-backend-i5pv.onrender.com/api';
 
 function App() {
   const [email, setEmail] = useState('admin@company.com');
