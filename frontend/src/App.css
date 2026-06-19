@@ -977,3 +977,582 @@ body {
     font-size: 10px;
   }
 }
+/* ============================================================
+   EMPLOYEE DASHBOARD - PROFESSIONAL DESIGN
+   ============================================================ */
+.employee-dashboard-container {
+  padding: 0;
+}
+
+/* Welcome Section */
+.emp-welcome-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 24px;
+  padding: 20px 24px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 16px;
+}
+
+.emp-welcome-content {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.emp-welcome-icon {
+  font-size: 36px;
+}
+
+.emp-welcome-content h2 {
+  color: #ffffff;
+  font-size: 22px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.emp-welcome-content p {
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 14px;
+  margin: 2px 0 0;
+}
+
+.emp-date-badge {
+  padding: 8px 18px;
+  background: rgba(97, 218, 251, 0.08);
+  border: 1px solid rgba(97, 218, 251, 0.1);
+  border-radius: 20px;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+/* Clock Card */
+.emp-clock-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 20px 24px;
+  background: linear-gradient(135deg, rgba(97, 218, 251, 0.06), rgba(97, 218, 251, 0.01));
+  border: 1px solid rgba(97, 218, 251, 0.08);
+  border-radius: 16px;
+  margin-bottom: 16px;
+}
+
+.emp-clock-left {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.emp-clock-status {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.emp-clock-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.emp-clock-status.clocked-in .emp-clock-dot {
+  background: #4caf50;
+  box-shadow: 0 0 12px rgba(76, 175, 80, 0.3);
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+
+.emp-clock-status.clocked-out .emp-clock-dot {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+@keyframes pulse-dot {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.3); opacity: 0.7; }
+}
+
+.emp-clock-label {
+  font-weight: 600;
+  font-size: 16px;
+  color: #ffffff;
+}
+
+.emp-clock-time {
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 14px;
+  margin-left: 20px;
+}
+
+.emp-clock-btn {
+  padding: 12px 32px;
+  border: none;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: 'Inter', sans-serif;
+  min-width: 140px;
+}
+
+.emp-clock-btn.clock-in {
+  background: linear-gradient(135deg, #4caf50, #388e3c);
+  color: #ffffff;
+}
+
+.emp-clock-btn.clock-in:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(76, 175, 80, 0.3);
+}
+
+.emp-clock-btn.clock-out {
+  background: linear-gradient(135deg, #ff6b6b, #e55a5a);
+  color: #ffffff;
+}
+
+.emp-clock-btn.clock-out:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(255, 107, 107, 0.3);
+}
+
+.emp-clock-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Messages */
+.emp-message {
+  padding: 12px 18px;
+  border-radius: 10px;
+  font-size: 14px;
+  margin-bottom: 16px;
+}
+
+.emp-message.success {
+  background: rgba(76, 175, 80, 0.1);
+  color: #4caf50;
+  border: 1px solid rgba(76, 175, 80, 0.15);
+}
+
+.emp-message.error {
+  background: rgba(255, 107, 107, 0.1);
+  color: #ff6b6b;
+  border: 1px solid rgba(255, 107, 107, 0.15);
+}
+
+.emp-location {
+  padding: 8px 16px;
+  background: rgba(97, 218, 251, 0.05);
+  border-radius: 8px;
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 12px;
+  margin-bottom: 16px;
+  border: 1px solid rgba(97, 218, 251, 0.05);
+}
+
+/* Stats Grid */
+.emp-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.emp-stat-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 20px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 12px;
+}
+
+.emp-stat-icon {
+  font-size: 28px;
+}
+
+.emp-stat-value {
+  font-size: 18px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.emp-stat-label {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+/* Two Column Layout */
+.emp-two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+/* Cards */
+.emp-card {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 16px;
+  padding: 20px;
+}
+
+.emp-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.emp-card-header h3 {
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.emp-small-btn {
+  padding: 4px 14px;
+  background: rgba(97, 218, 251, 0.08);
+  border: 1px solid rgba(97, 218, 251, 0.12);
+  border-radius: 8px;
+  color: #61dafb;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: 'Inter', sans-serif;
+}
+
+.emp-small-btn:hover {
+  background: rgba(97, 218, 251, 0.15);
+}
+
+/* Leave Balance */
+.emp-leave-balance {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.emp-balance-item {
+  text-align: center;
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 10px;
+}
+
+.emp-balance-item span {
+  display: block;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.emp-balance-item strong {
+  color: #ffffff;
+  font-size: 16px;
+}
+
+/* Leave Form */
+.emp-leave-form {
+  padding: 16px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.04);
+  margin-bottom: 16px;
+}
+
+.emp-form-group {
+  margin-bottom: 12px;
+}
+
+.emp-form-group label {
+  display: block;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.5);
+  margin-bottom: 4px;
+  font-weight: 500;
+}
+
+.emp-form-group input,
+.emp-form-group select,
+.emp-form-group textarea {
+  width: 100%;
+  padding: 10px 14px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 10px;
+  color: #ffffff;
+  font-size: 14px;
+  font-family: 'Inter', sans-serif;
+  transition: all 0.3s ease;
+  outline: none;
+}
+
+.emp-form-group input:focus,
+.emp-form-group select:focus,
+.emp-form-group textarea:focus {
+  border-color: #61dafb;
+  background: rgba(97, 218, 251, 0.05);
+}
+
+.emp-form-group textarea {
+  resize: vertical;
+  min-height: 60px;
+}
+
+.emp-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.emp-submit-btn {
+  width: 100%;
+  padding: 10px;
+  background: linear-gradient(135deg, #61dafb, #4fa8d1);
+  color: #0a0e17;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: 'Inter', sans-serif;
+}
+
+.emp-submit-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(97, 218, 251, 0.25);
+}
+
+.emp-submit-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Recent Lists */
+.emp-recent-list h4,
+.emp-attendance-list h4 {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 13px;
+  font-weight: 500;
+  margin-bottom: 12px;
+}
+
+.emp-list-item,
+.emp-attendance-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 10px;
+  margin-bottom: 6px;
+}
+
+.emp-list-type {
+  font-size: 13px;
+  color: #ffffff;
+  margin-right: 8px;
+}
+
+.emp-list-status {
+  font-size: 11px;
+  padding: 2px 10px;
+  border-radius: 12px;
+}
+
+.emp-list-status.approved {
+  background: rgba(76, 175, 80, 0.12);
+  color: #4caf50;
+}
+
+.emp-list-status.pending {
+  background: rgba(255, 217, 61, 0.12);
+  color: #ffd93d;
+}
+
+.emp-list-status.rejected {
+  background: rgba(255, 107, 107, 0.12);
+  color: #ff6b6b;
+}
+
+.emp-list-date {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.emp-empty {
+  text-align: center;
+  padding: 20px 0;
+  color: rgba(255, 255, 255, 0.2);
+  font-size: 14px;
+}
+
+/* Attendance */
+.emp-attendance-date {
+  font-size: 13px;
+  color: #ffffff;
+  min-width: 80px;
+}
+
+.emp-attendance-times {
+  display: flex;
+  gap: 12px;
+  font-size: 13px;
+}
+
+.emp-clock-in {
+  color: #4caf50;
+}
+
+.emp-clock-out {
+  color: #ff6b6b;
+}
+
+.emp-attendance-status {
+  font-size: 11px;
+  padding: 2px 10px;
+  border-radius: 12px;
+}
+
+.emp-attendance-status.present {
+  background: rgba(76, 175, 80, 0.12);
+  color: #4caf50;
+}
+
+.emp-attendance-status.absent {
+  background: rgba(255, 107, 107, 0.12);
+  color: #ff6b6b;
+}
+
+.emp-attendance-status.late {
+  background: rgba(255, 217, 61, 0.12);
+  color: #ffd93d;
+}
+
+/* ============================================================
+   RESPONSIVE - EMPLOYEE DASHBOARD
+   ============================================================ */
+@media (max-width: 768px) {
+  .emp-two-col {
+    grid-template-columns: 1fr;
+  }
+
+  .emp-welcome-section {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 16px 18px;
+  }
+
+  .emp-welcome-content h2 {
+    font-size: 18px;
+  }
+
+  .emp-welcome-content p {
+    font-size: 13px;
+  }
+
+  .emp-date-badge {
+    font-size: 12px;
+    padding: 6px 14px;
+  }
+
+  .emp-clock-card {
+    flex-direction: column;
+    align-items: stretch;
+    text-align: center;
+    padding: 18px 20px;
+  }
+
+  .emp-clock-left {
+    align-items: center;
+  }
+
+  .emp-clock-btn {
+    width: 100%;
+    min-width: auto;
+    padding: 12px;
+  }
+
+  .emp-stats-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .emp-stat-item {
+    padding: 12px 16px;
+  }
+
+  .emp-stat-value {
+    font-size: 16px;
+  }
+
+  .emp-leave-balance {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+
+  .emp-form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .emp-card {
+    padding: 16px;
+  }
+
+  .emp-list-item,
+  .emp-attendance-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .emp-attendance-times {
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 480px) {
+  .emp-stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .emp-leave-balance {
+    grid-template-columns: 1fr;
+  }
+
+  .emp-welcome-section {
+    padding: 14px 16px;
+  }
+
+  .emp-welcome-content {
+    flex-direction: column;
+    text-align: center;
+    width: 100%;
+  }
+
+  .emp-clock-card {
+    padding: 16px;
+  }
+
+  .emp-clock-label {
+    font-size: 14px;
+  }
+
+  .emp-card {
+    padding: 12px;
+  }
+
+  .emp-card-header h3 {
+    font-size: 14px;
+  }
+}

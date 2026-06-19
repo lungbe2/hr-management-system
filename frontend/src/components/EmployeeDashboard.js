@@ -195,97 +195,113 @@ const EmployeeDashboard = ({ user, token }) => {
 
   return (
     <div className="employee-dashboard-container">
-      <div className="employee-welcome">
-        <h2>👋 Welcome, {user?.firstName}!</h2>
-        <p>Here's your dashboard for today</p>
-      </div>
-
-      {/* Clock Section */}
-      <div className="clock-section">
-        <div className="clock-card">
-          <div className="clock-icon">
-            {isClockedIn ? '🟢' : '⏰'}
-          </div>
-          <div className="clock-info">
-            <h3>{isClockedIn ? 'Clocked In' : 'Ready to Clock In'}</h3>
-            <p>{isClockedIn ? `Since ${clockInTime?.toLocaleTimeString()}` : 'Start your work day'}</p>
-          </div>
-          <button
-            onClick={isClockedIn ? handleClockOut : handleClockIn}
-            disabled={loading}
-            className={isClockedIn ? 'clock-out-btn' : 'clock-in-btn'}
-          >
-            {loading ? 'Processing...' : (isClockedIn ? '🔴 Clock Out' : '🟢 Clock In')}
-          </button>
-        </div>
-
-        {message && (
-          <div className={`clock-message ${message.includes('✅') ? 'success' : 'error'}`}>
-            {message}
-          </div>
-        )}
-
-        {clockInLocation && (
-          <div className="location-indicator">
-            📍 Location verified: {clockInLocation.lat.toFixed(6)}, {clockInLocation.lng.toFixed(6)}
-          </div>
-        )}
-      </div>
-
-      {/* Quick Stats */}
-      <div className="employee-stats-grid">
-        <div className="emp-stat-card">
-          <span className="emp-stat-icon">📅</span>
+      {/* Welcome Section */}
+      <div className="emp-welcome-section">
+        <div className="emp-welcome-content">
+          <div className="emp-welcome-icon">👋</div>
           <div>
-            <div className="emp-stat-value">Today</div>
-            <div className="emp-stat-label">{isClockedIn ? 'Clocked In ✓' : 'Not clocked in'}</div>
+            <h2>Welcome back, {user?.firstName}!</h2>
+            <p>Here's your work summary for today</p>
           </div>
         </div>
-        <div className="emp-stat-card">
-          <span className="emp-stat-icon">⏱️</span>
+        <div className="emp-date-badge">
+          {new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}
+        </div>
+      </div>
+
+      {/* Clock In/Out Card */}
+      <div className="emp-clock-card">
+        <div className="emp-clock-left">
+          <div className={`emp-clock-status ${isClockedIn ? 'clocked-in' : 'clocked-out'}`}>
+            <span className="emp-clock-dot"></span>
+            <span className="emp-clock-label">{isClockedIn ? 'Clocked In' : 'Ready to Clock In'}</span>
+          </div>
+          <div className="emp-clock-time">
+            {isClockedIn ? `Since ${clockInTime?.toLocaleTimeString()}` : 'Start your work day'}
+          </div>
+        </div>
+        <button
+          onClick={isClockedIn ? handleClockOut : handleClockIn}
+          disabled={loading}
+          className={`emp-clock-btn ${isClockedIn ? 'clock-out' : 'clock-in'}`}
+        >
+          {loading ? '⏳ Processing...' : (isClockedIn ? '🔴 Clock Out' : '🟢 Clock In')}
+        </button>
+      </div>
+
+      {message && (
+        <div className={`emp-message ${message.includes('✅') ? 'success' : 'error'}`}>
+          {message}
+        </div>
+      )}
+
+      {clockInLocation && (
+        <div className="emp-location">
+          📍 Location verified: {clockInLocation.lat.toFixed(6)}, {clockInLocation.lng.toFixed(6)}
+        </div>
+      )}
+
+      {/* Stats Grid */}
+      <div className="emp-stats-grid">
+        <div className="emp-stat-item">
+          <div className="emp-stat-icon">📅</div>
+          <div>
+            <div className="emp-stat-value">{isClockedIn ? 'Clocked In ✓' : 'Not clocked in'}</div>
+            <div className="emp-stat-label">Today's Status</div>
+          </div>
+        </div>
+        <div className="emp-stat-item">
+          <div className="emp-stat-icon">⏱️</div>
           <div>
             <div className="emp-stat-value">8h 15m</div>
             <div className="emp-stat-label">Hours Today</div>
           </div>
         </div>
-        <div className="emp-stat-card">
-          <span className="emp-stat-icon">✅</span>
+        <div className="emp-stat-item">
+          <div className="emp-stat-icon">✅</div>
           <div>
             <div className="emp-stat-value">22</div>
             <div className="emp-stat-label">Days Present</div>
           </div>
         </div>
+        <div className="emp-stat-item">
+          <div className="emp-stat-icon">📊</div>
+          <div>
+            <div className="emp-stat-value">95%</div>
+            <div className="emp-stat-label">Attendance Rate</div>
+          </div>
+        </div>
       </div>
 
-      {/* Dashboard Grid */}
-      <div className="dashboard-grid">
+      {/* Two Column Layout */}
+      <div className="emp-two-col">
         {/* Leave Management */}
-        <div className="dashboard-card leave-card">
-          <div className="card-header">
+        <div className="emp-card">
+          <div className="emp-card-header">
             <h3>✈️ Leave Management</h3>
-            <button className="small-btn" onClick={() => setShowLeaveForm(!showLeaveForm)}>
+            <button className="emp-small-btn" onClick={() => setShowLeaveForm(!showLeaveForm)}>
               {showLeaveForm ? '✕' : '+ Request'}
             </button>
           </div>
 
-          <div className="leave-balance-mini">
-            <div className="balance-mini-item">
-              <span>Annual</span>
+          <div className="emp-leave-balance">
+            <div className="emp-balance-item">
+              <span>🏖️ Annual</span>
               <strong>{leaveBalance.annual} days</strong>
             </div>
-            <div className="balance-mini-item">
-              <span>Sick</span>
+            <div className="emp-balance-item">
+              <span>🤒 Sick</span>
               <strong>{leaveBalance.sick} days</strong>
             </div>
-            <div className="balance-mini-item">
-              <span>Casual</span>
+            <div className="emp-balance-item">
+              <span>📋 Casual</span>
               <strong>{leaveBalance.casual} days</strong>
             </div>
           </div>
 
           {showLeaveForm && (
-            <form className="leave-form-mini" onSubmit={handleLeaveSubmit}>
-              <div className="form-group">
+            <form className="emp-leave-form" onSubmit={handleLeaveSubmit}>
+              <div className="emp-form-group">
                 <label>Leave Type</label>
                 <select
                   value={leaveFormData.leave_type}
@@ -300,82 +316,84 @@ const EmployeeDashboard = ({ user, token }) => {
                   <option>Unpaid</option>
                 </select>
               </div>
-              <div className="form-group">
-                <label>Start Date</label>
-                <input
-                  type="date"
-                  value={leaveFormData.start_date}
-                  onChange={(e) => setLeaveFormData({ ...leaveFormData, start_date: e.target.value })}
-                  required
-                />
+              <div className="emp-form-row">
+                <div className="emp-form-group">
+                  <label>Start</label>
+                  <input
+                    type="date"
+                    value={leaveFormData.start_date}
+                    onChange={(e) => setLeaveFormData({ ...leaveFormData, start_date: e.target.value })}
+                    required
+                  />
+                </div>
+                <div className="emp-form-group">
+                  <label>End</label>
+                  <input
+                    type="date"
+                    value={leaveFormData.end_date}
+                    onChange={(e) => setLeaveFormData({ ...leaveFormData, end_date: e.target.value })}
+                    required
+                  />
+                </div>
               </div>
-              <div className="form-group">
-                <label>End Date</label>
-                <input
-                  type="date"
-                  value={leaveFormData.end_date}
-                  onChange={(e) => setLeaveFormData({ ...leaveFormData, end_date: e.target.value })}
-                  required
-                />
-              </div>
-              <div className="form-group">
+              <div className="emp-form-group">
                 <label>Reason</label>
                 <textarea
                   value={leaveFormData.reason}
                   onChange={(e) => setLeaveFormData({ ...leaveFormData, reason: e.target.value })}
                   rows="2"
-                  placeholder="Optional reason for leave"
+                  placeholder="Optional reason"
                 />
               </div>
-              <button type="submit" disabled={loading} className="submit-leave-btn">
+              <button type="submit" disabled={loading} className="emp-submit-btn">
                 {loading ? 'Submitting...' : 'Submit Request'}
               </button>
             </form>
           )}
 
-          <div className="recent-leave">
+          <div className="emp-recent-list">
             <h4>Recent Requests</h4>
             {leaveRequests.length > 0 ? (
               leaveRequests.map((req, index) => (
-                <div key={index} className="leave-item">
+                <div key={index} className="emp-list-item">
                   <div>
-                    <span className="leave-type">{req.leave_type}</span>
-                    <span className={`leave-status ${req.status?.toLowerCase()}`}>
+                    <span className="emp-list-type">{req.leave_type}</span>
+                    <span className={`emp-list-status ${req.status?.toLowerCase()}`}>
                       {req.status || 'Pending'}
                     </span>
                   </div>
-                  <div className="leave-dates">
+                  <div className="emp-list-date">
                     {req.start_date} → {req.end_date}
                   </div>
                 </div>
               ))
             ) : (
-              <p className="no-items">No leave requests yet</p>
+              <p className="emp-empty">No leave requests yet</p>
             )}
           </div>
         </div>
 
         {/* Attendance History */}
-        <div className="dashboard-card attendance-card">
-          <div className="card-header">
+        <div className="emp-card">
+          <div className="emp-card-header">
             <h3>⏰ Recent Attendance</h3>
           </div>
-          <div className="attendance-list">
+          <div className="emp-attendance-list">
             {attendanceHistory.length > 0 ? (
               attendanceHistory.map((record, index) => (
-                <div key={index} className="attendance-item">
-                  <div className="attendance-date">{record.date}</div>
-                  <div className="attendance-times">
-                    <span className="clock-in-time">🟢 {record.clock_in || '--:--'}</span>
-                    <span className="clock-out-time">🔴 {record.clock_out || '--:--'}</span>
+                <div key={index} className="emp-attendance-item">
+                  <div className="emp-attendance-date">{record.date}</div>
+                  <div className="emp-attendance-times">
+                    <span className="emp-clock-in">🟢 {record.clock_in || '--:--'}</span>
+                    <span className="emp-clock-out">🔴 {record.clock_out || '--:--'}</span>
                   </div>
-                  <span className={`attendance-status ${record.status?.toLowerCase()}`}>
+                  <span className={`emp-attendance-status ${record.status?.toLowerCase()}`}>
                     {record.status || 'Present'}
                   </span>
                 </div>
               ))
             ) : (
-              <p className="no-items">No attendance records yet</p>
+              <p className="emp-empty">No attendance records yet</p>
             )}
           </div>
         </div>
